@@ -5,12 +5,31 @@ import { Icons } from "open-icon";
 import Icon from "./ui/Icon.vue";
 import ContextMenu from './ui/ContextMenu/ContextMenu.vue';
 import type { ContextMenuConfig } from './ui/ContextMenu/ContextMenu.model';
+import { ref, onMounted } from 'vue';
 
 const props = defineProps<{
   image: Image
 }>();
 
 const router = useRouter();
+const imageRef = ref<HTMLImageElement | null>(null);
+const isIntersecting = ref(false);
+
+onMounted(() => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const [entry] = entries;
+      isIntersecting.value = entry.isIntersecting;
+    },
+    {
+      rootMargin: '300px'
+    }
+  );
+
+  if (imageRef.value) {
+    observer.observe(imageRef.value);
+  }
+});
 
 const navigateToDetail = (id: string) => {
   router.push({ name: 'image-detail', params: { id } });
@@ -70,7 +89,13 @@ const downloadImage = async (size: string) => {
       </ContextMenu>
 
     </div>
-    <img :src="image.url.thumbnail" :alt="image.name" class="image-card__image" />
+    <img
+      :src="isIntersecting ? image.url.thumbnail : undefined"
+      :alt="image.name"
+      class="image-card__image"
+      ref="imageRef"
+      loading="lazy"
+    />
     <div class="image-card__content" @click="navigateToDetail(image.id)">
       <h3 class="image-card__title">{{ image.name }}</h3>
       <p class="image-card__description">{{ image.description }}</p>

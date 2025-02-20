@@ -4,6 +4,10 @@ import { useRoute, useRouter } from 'vue-router';
 import { useImages } from '../composables/useImages';
 import { Icons } from 'open-icon';
 import Icon from '@/components/ui/Icon.vue';
+import Button from '@/components/ui/Button/Button.vue';
+import ButtonGroup from '@/components/ui/Button/ButtonGroup.vue';
+import { ButtonSettings } from '@/components/ui/Button/Button.model';
+import { downloadImage } from '@/utils/downloadImage';
 
 const route = useRoute();
 const router = useRouter();
@@ -49,6 +53,30 @@ onMounted(async () => {
           </span>
         </div>
       </div>
+
+      <ButtonGroup :align="ButtonSettings.Align.Center">
+        <Button
+          :icon="Icons.ARROW_DOWNLOAD"
+          :size="ButtonSettings.Size.Small"
+          @click="downloadImage(image.url, image.name, 'small')"
+        >
+          Download Small
+        </Button>
+        <Button
+          :icon="Icons.ARROW_DOWNLOAD"
+          :size="ButtonSettings.Size.Small"
+          @click="downloadImage(image.url, image.name, 'medium')"
+        >
+          Download Medium
+        </Button>
+        <Button
+          :icon="Icons.ARROW_DOWNLOAD"
+          :size="ButtonSettings.Size.Small"
+          @click="downloadImage(image.url, image.name, 'large')"
+        >
+          Download Original
+        </Button>
+      </ButtonGroup>
     </div>
   </main>
 </template>
